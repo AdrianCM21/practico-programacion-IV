@@ -1,0 +1,31 @@
+{% extends "layaut.html" %}
+
+{% block content %}
+<div class="fromPaises">
+    <h1>Agregar Modelo</h1>
+    <form action="/cargar" method="post">
+        <div>
+           <label for="dato">Dato:</label>
+        <input type="text" name="dato" id="dato" required> 
+        </div>
+        <div>
+        <div>
+            <label for="detalle">Detalle:</label>
+            <input type="text" name="detalle" id="detalle" required> 
+            </div>
+        <div>
+            <div>
+            <label for="dato_combo">Selecciona una dato:</label>
+            <select name="dato_combo" id="dato_combo" >
+                <option value="Jose">Jose</option>
+                <option value="Rambo">Rambo</option>
+                <option value="Tarzan">Jose</option>
+                <option value="Scoby">Scoby</option>
+                <option value="Luis">Luis</option>
+            </select>
+        </div>
+        <button type="submit" class="btn-success">Agregar</button>
+    </form>
+
+</div>
+{% endblock %}
