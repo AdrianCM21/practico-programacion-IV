@@ -1,0 +1,62 @@
+{% extends "layaut.html" %}
+
+{% block content %}
+<form id="searchForm" method="get">
+    <label for="matricula">Matricula:</label>
+    <input type="text" id="matricula" name="matricula" onkeyup="searchVehicles()"><br><br>
+
+    <label for="marca">Marca:</label>
+    <input type="text" id="marca" name="marca" onkeyup="searchVehicles()"><br><br>
+
+    <label for="modelo">Modelo:</label>
+    <input type="text" id="modelo" name="modelo" onkeyup="searchVehicles()"><br><br>
+</form>
+
+<div class="itemcontainer border-bottom">
+    <h2>Lista de modelos</h2>
+    <table id="vehiclesTable" class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Matricula</th>
+                <th>Marca</th>
+                <th>Modelo</th>
+            </tr>
+        </thead>
+        
+    </table>
+    
+   </div>
+   <div class="btncontainer mt-3 p-2 align-items-center">
+    <a href="/"><button class="btn btn-primary">Volver</button></a>
+    <a href="/vehiculo/add"><button class="btn btn-success">+</button></a>
+</div>
+
+<script>
+    async function searchVehicles() {
+        const matricula = document.getElementById('matricula').value;
+        const marca = document.getElementById('marca').value;
+        const modelo = document.getElementById('modelo').value;
+
+        const response = await fetch(`/vehicles/?matricula=${matricula}&marca=${marca}&modelo=${modelo}`);
+        const vehicles = await response.json();
+
+        const table = document.getElementById('vehiclesTable');
+        table.innerHTML = `
+            <tr>
+                <th>Matricula</th>
+                <th>Marca</th>
+                <th>Modelo</th>
+                <th>Imagen</th>
+            </tr>
+            ${vehicles.map(vehicle => `
+                <tr>
+                    <td>${vehicle.matricula}</td>
+                    <td>${vehicle.brand.descMarca}</td>
+                    <td>${vehicle.model.descModelo}</td>
+                    <td><img src="${vehicle.imagen_base64}" ></td>
+                </tr>
+            `).join('')}
+        `;
+    }
+</script>
+{% endblock %}

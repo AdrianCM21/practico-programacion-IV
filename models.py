@@ -1,13 +1,30 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, BLOB,TEXT
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
-class DatosParcial(Base):
-    __tablename__ = 'DatosParcial'
+class Brand(Base):
+    __tablename__ = 'brands'
+    idMarca = Column(Integer, primary_key=True, index=True)
+    descMarca = Column(String(50), unique=True, index=True)
+    models = relationship("Model", back_populates="brand")
 
-    Id = Column(Integer, primary_key=True, index=True)
-    Dato = Column(String(50))
-    Detalle = Column(String(50))
-    ValordelCombo =  Column(String(50))
+class Model(Base):
+    __tablename__ = 'models'
+    idModelo = Column(Integer, primary_key=True, index=True)
+    descModelo = Column(String(50), unique=True, index=True)
+    idMarcaFk = Column(Integer, ForeignKey('brands.idMarca'))
+    brand = relationship("Brand", back_populates="models")
+    vehicles = relationship("Vehicle", back_populates="model")
+
+class Vehicle(Base):
+    __tablename__ = 'vehicles'
+    idVehiculo = Column(Integer, primary_key=True, index=True)
+    matricula = Column(String(50), unique=True, index=True)
+    imagen_base64 = Column(TEXT)
+    idMarcaFk = Column(Integer, ForeignKey('brands.idMarca'))
+    idModeloFk = Column(Integer, ForeignKey('models.idModelo'))
+    brand = relationship("Brand")
+    model = relationship("Model")
+    

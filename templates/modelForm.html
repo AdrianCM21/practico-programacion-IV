@@ -1,0 +1,25 @@
+{% extends "layaut.html" %}
+
+{% block content %}
+<div class="fromPaises">
+    <h1>Agregar Modelo</h1>
+    <form action="/modelo" method="post">
+        <div>
+           <label for="nombre_modelo">Modelo:</label>
+        <input type="text" name="nombre_modelo" id="nombre_modelo" required> 
+        </div>
+        <div>
+            <label for="marca">Selecciona una marca:</label>
+            <select name="marca" id="marca" >
+                {% for marca in marcas %}
+                    <option value="{{ marca.idMarca}}">{{ marca.descMarca }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+
+        <button type="submit" class="btn-success">Agregar</button>
+    </form>
+
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "layaut.html" %}
+
+{% block content %}
+<div class="fromPaises">
+    <h1>Agregar Marca</h1>
+    <form action="/marca" method="post">
+        <label for="nombre_marca">Nombre marca:</label>
+        <input type="text" name="nombre_marca" id="nombre_marca" required>
+        <button type="submit" class="btn-success">Agregar</button>
+    </form>
+
+</div>
+{% endblock %}

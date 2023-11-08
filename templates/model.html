@@ -1,0 +1,16 @@
+{% extends "layaut.html" %}
+
+{% block content %}
+<div class="itemcontainer border-bottom">
+    <h2>Lista de modelos</h2>
+    <ul class="list-group">
+        {% for modelo in modelos %}
+            <li class="list-group-item">{{ modelo.descModelo }} </li>
+        {% endfor %}
+    </ul>
+   </div>
+   <div class="btncontainer mt-3 p-2 align-items-center">
+    <a href="/"><button class="btn btn-primary">Volver</button></a>
+    <a href="/modelo/add"><button class="btn btn-success">+</button></a>
+</div>
+{% endblock %}

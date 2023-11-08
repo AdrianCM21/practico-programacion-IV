@@ -1,0 +1,62 @@
+{% extends "layaut.html" %}
+
+{% block content %}
+<form action="/vehiculo" method="post">
+    <label for="matricula">Matricula:</label>
+    <input type="text" id="matricula" name="matricula"><br><br>
+
+    <label for="brand">Selecciones una marca:</label>
+    <select id="brand" name="idMarcaFk">
+        {% for b in marcas %}
+            <option value="{{ b.idMarca }}">{{ b.descMarca }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <label for="model">Seleccione un modelo:</label>
+    <select id="model" name="idModeloFk">
+        <option value="">--Select a brand first--</option>
+    </select><br><br>
+    <input type="hidden" id="imagen_base64" name="imagen_base64" value="">
+
+    <!-- Campo de entrada de imagen -->
+    <label for="image">Imagen:</label>
+    <input type="file" id="image" accept="image/*"><br><br>
+
+    <button type="button" id="saveImage">Guardar Imagen</button>
+
+    <input type="submit" value="Submit">
+</form>
+
+<script>
+    document.getElementById('brand').addEventListener('change', async function() {
+        const models = await fetch('/get_models/' + this.value);
+        const jsonModels = await models.json();
+        const select = document.getElementById('model');
+        select.innerHTML = '';
+        for (let m of jsonModels) {
+            let option = document.createElement('option');
+            option.value = m.idModelo;
+            option.text = m.descModelo;
+            select.appendChild(option);
+        }
+    });
+    document.getElementById('saveImage').addEventListener('click', function() {
+        const imageInput = document.getElementById('image');
+        if (imageInput.files.length > 0) {
+            const file = imageInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function() {
+                const base64Image = reader.result;
+                console.log("Imagen en base64:", base64Image);
+                document.getElementById('imagen_base64').value = base64Image;
+
+            };
+
+            reader.readAsDataURL(file);
+        } else {
+            alert("Seleccione una imagen antes de guardarla.");
+        }
+    });
+</script>
+{% endblock %}
