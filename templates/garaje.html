@@ -1,78 +1,45 @@
 {% extends "layaut.html" %}
 
 {% block content %}
-<div class="formRegistro">
-    <p id="contador">Dia: 0</p>
-    <p id="cantidad">Cantidad: 0</p>
-    <label for="fecha_registro">Fecha:</label>
-    <input type="date" id="fecha_registro" required>  
-</div>
-<div>
-    <label for="matricula">Matricula:</label>
-    <select id="matricula" name="matricula" >
-        <option value="">Selecciona una matrícula</option>
-        {% for vehicle in vehiculos %}
-            <option value="{{vehicle.idVehiculo}}">{{vehicle.matricula}}</option>
-        {% endfor %}
-    </select><br><br>
-</div>
-<a href="/IngresosDia"><button class="btn btn-primary">Lista de ingresos por dia</button></a>
-<button type="submit" class="btn btn-success">Agregar</button>
 <div class="itemcontainer border-bottom">
-    <h2>Detalle ingresos</h2>
-    <table id="vehiclesTable" class="table table-striped table-bordered">
+    
+    
+    <h2>Lista de Garajes</h2>
+    
+    <table class="table table-striped table-bordered">
         <thead class="table-dark">
             <tr>
-                <th>Matricula</th>
+                <th>Id</th>
+                <th>Description</th>
+                <th>Detalle</th>
+                <th>Contidad vehiculo</th>
                 <th>Eliminar</th>
             </tr>
         </thead>
-        
-    </table>
-    
-</div>
-
-<script>
-    const getVehiculos =(id)=>{
-        $.get(`/registroget/${id}`, function(data, status){
-            const table = $("#vehiclesTable");
-            $("#contador").text('Dia: '+data[0].idIngresoFk);
-            table.html(`
+        <tbody>
+            {% for dato in datos %}
                 <tr>
-                    <th>Matricula</th>
-                    <th>Eliminar</th>
+                    <td>{{ dato.idGaraje }}</td>
+                    <td>{{dato.description}}</td>
+                    <td>{{dato.Detalle}}</td>
+                    <td>{{dato.cantidad}}</td>
+                    <td><a href="/borrar/{{dato.Id}}">Eliminar</a></td>
                 </tr>
-                ${data.map(vehicle => `
-                    <tr>
-                        <td>${vehicle.matricula}</td>
-                        <td ><button class="btn-danger"  onclick="deleteRegistro(${vehicle.idVehiculo})">Eliminar</button></td>
-                    </tr>
-                `).join('')}
-            `);
-        });
-    }
-    const deleteRegistro=(id)=>{
-        $.get(`/deleteregistro/${id}`, function(data, status){
-            getVehiculos(data.dia);
-        });
-    }
-    $(document).ready(function(){
-       $(".btn").click(function(){
-           const fecha = $("#fecha_registro").val();
-           const matricula = $("#matricula").val();
-           console.log( fecha , matricula);
-           $.post("/activity",{fecha:fecha,matricula:matricula}, function(data, status){
-               if(!(data.msg == 'Ya esta registrado')){
-                    $("#contador").text('Dia: '+data.dia);
-                    $("#cantidad").text('Cantidad: '+data.cantidad);
-                    getVehiculos(data.dia);
-                }else{
-                    getVehiculos(data.dia);
-                }
-               
-           });
-       });
-   });
-</script>
+            {% endfor %}
+        </tbody>
+    </table>
+
+   </div>
+
+   <div class="btncontainer mt-3 p-2 align-items-center">
+    <a href="/"><button class="btn btn-primary">Volver</button></a>
+    <br>
+    <label for="addgaraje">Agregar garaje</label>
+    <a href="/garajes/add"><button id="addgaraje" class="btn btn-success">+</button></a>
+    <br>
+    <label for="addgaraje_vehiculo">Agregar vehiculo</label>
+    <a href="/garajes_vehiculo/add"><button id="addgaraje_vehiculo" class="btn btn-success">+</button></a>
+    </div>
+</div>
 
 {% endblock %}

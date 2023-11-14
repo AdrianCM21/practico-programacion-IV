@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-from models import Brand,Model,Vehicle,Activity, Base
+from models import Brand,Model,Vehicle,Activity,Garaje, Base
 from pydantic import BaseModel
 from config import DATABASE_URL
 from starlette.responses import JSONResponse
@@ -190,5 +190,38 @@ def delete_registro(id:int, db: Session = Depends(get_db)):
 def IngresosDia(request: Request, db: Session = Depends(get_db) ):
     ingresos =db.query(Activity).all()
     return templates.TemplateResponse("IngresosDia.html", {"request": request,"ingresos":ingresos})
+
+@app.get("/garajes") 
+def garajes(request: Request, db: Session = Depends(get_db) ):
+    datos =db.query(Garaje).all()
+    return templates.TemplateResponse("garaje.html", {"request": request,"datos":datos})
+
+@app.get("/garajes_vehiculo/add")
+def agregar_garaje_vehiculo(request: Request, db: Session = Depends(get_db)):
+    garajes = db.query(Garaje).all()
+    vehiculos = db.query(Vehicle).filter(Vehicle.idGarajeFk.is_(None)).all()
+    return templates.TemplateResponse("garaje_vehiculoForm.html", {"request": request, "garajes": garajes, "vehiculos": vehiculos})
+
+@app.get("/garajes/add")
+def agregar_garaje(request: Request, db: Session = Depends(get_db)):
+    return templates.TemplateResponse("garajeForm.html", {"request": request})
+
+@app.post("/garajes/add")
+def agregar_garajepost( garaje_modelo: str = Form(...),db: Session = Depends(get_db)):
+    garaje = Garaje(description=garaje_modelo,cantidad=1)
+    db.add(garaje)
+    db.commit()
+    return RedirectResponse(url='/garajes',status_code=HTTP_302_FOUND)
+
+@app.post("/garajes_vehiculo/add")
+def agregar_garaje_vehiculopost( idGarajeFk: str = Form(...),vehiculo: str = Form(...),db: Session = Depends(get_db)):
+    garaje = db.query(Garaje).filter_by(idGaraje=idGarajeFk).first()
+    garaje.cantidad = garaje.cantidad + 1
+    vehiculo = db.query(Vehicle).filter_by(idVehiculo=vehiculo).first()
+    vehiculo.idGarajeFk = garaje.idGaraje
+    db.commit()
+    return RedirectResponse(url='/garajes',status_code=HTTP_302_FOUND)
+
+
 
 

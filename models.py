@@ -28,7 +28,7 @@ class Activity(Base):
 class Garaje(Base):
     __tablename__ = 'garajes'
     idGaraje = Column(Integer, primary_key=True, index=True)
-    descri = Column(String(21), unique=True, index=True)
+    description = Column(String(21), unique=True, index=True)
     cantidad = Column(Integer, default=1)
     vehicles = relationship("Vehicle", back_populates="garajes")
      
