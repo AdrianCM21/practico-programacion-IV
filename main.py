@@ -190,3 +190,5 @@ def delete_registro(id:int, db: Session = Depends(get_db)):
 def IngresosDia(request: Request, db: Session = Depends(get_db) ):
     ingresos =db.query(Activity).all()
     return templates.TemplateResponse("IngresosDia.html", {"request": request,"ingresos":ingresos})
+
+
