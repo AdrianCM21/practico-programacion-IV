@@ -87,7 +87,6 @@ def Guardar_marca(nombre_marca: str = Form(...), db: Session = Depends(get_db)):
 
 
 
-
 @app.get("/vehiculo")
 def crear_vehiculo(request: Request, db: Session = Depends(get_db) ):
     vehiculos = db.query(Vehicle).all()

@@ -1,7 +1,7 @@
 {% extends "layaut.html" %}
 
 {% block content %}
-<div class="fromPaises">
+<!-- <div class="fromPaises">
     <h1>Agregar Marca</h1>
     <form action="/marca" method="post">
         <label for="nombre_marca">Nombre marca:</label>
@@ -9,5 +9,78 @@
         <button type="submit" class="btn-success">Agregar</button>
     </form>
 
-</div>
+</div> -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reg̃uahẽ</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+
+    <link rel="stylesheet" href="./fontawesome-free-6.4.0-web/css/all.css">
+</head>
+<body>
+        <nav>
+            <div class="container nav-container">
+                <a href="" class="logo"><h3>Reg̃uahẽ.</h3></a>
+                <ul class="nav-link">
+                    <li><a href="/" style="--i:1;" class="active">Inicio</a></li>
+                    <li><a href="/vehiculo" style="--i:2;">Vehículo</a></li>
+                    <li><a href="/marca" style="--i:3;">Marca</a></li>
+                    <li><a href="/modelo" style="--i:4;">Modelo</a></li>
+                    <li><a href="/registro" style="--i:5;">Registro</a></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+                <!-- <ul class="social-link">
+                    <li><a href="" style="--i:1;"><i class="fab fa-facebook"></i></a></li>
+                    <li><a href="" style="--i:2;"><i class="fab fa-twitter"></i></a></li>
+                    <li><a href="" style="--i:3;"><i class="fab fa-instagram"></i></a></li>
+                </ul> -->
+            </div>
+        </nav>
+
+
+        <header>
+            <div class="container header-container">
+                <div class="header-left">
+                    <h3>Agregar Marca</h3>
+                    <div class="fromPaises">
+                        <form action="/marca" method="post">
+                            <label for="nombre_marca">Nombre marca:</label>
+                            <input type="text" name="nombre_marca" id="nombre_marca" required>
+                            <button type="submit" class="btn btn-primary">Agregar</button>
+                        </form>
+                    
+                    </div>
+
+
+                </div>
+                <div class="header-right">
+                    <div class="sq-box">
+                        <img src="/static/image/car.png" alt="">
+                    </div>
+                </div>
+            </div>
+            <div class="sq-box2"></div>
+
+
+
+
+
+
+
+        </header>
+
+    </body>
+</html>
+
+
+
 {% endblock %}

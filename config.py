@@ -1,1 +1,1 @@
-DATABASE_URL = "mysql+mysqlconnector://root@localhost/prueba"
+DATABASE_URL = "mysql+mysqlconnector://root@localhost/auto_prueba"
