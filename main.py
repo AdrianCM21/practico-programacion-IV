@@ -208,16 +208,16 @@ def agregar_garaje(request: Request, db: Session = Depends(get_db)):
 
 @app.post("/garajes/add")
 def agregar_garajepost( garaje_modelo: str = Form(...),db: Session = Depends(get_db)):
-    garaje = Garaje(description=garaje_modelo,cantidad=1)
+    garaje = Garaje(description=garaje_modelo,cantidad=0)
     db.add(garaje)
     db.commit()
     return RedirectResponse(url='/garajes',status_code=HTTP_302_FOUND)
 
 @app.post("/garajes_vehiculo/add")
-def agregar_garaje_vehiculopost( idGarajeFk: str = Form(...),vehiculo: str = Form(...),db: Session = Depends(get_db)):
+def agregar_garaje_vehiculopost( idGarajeFk: str = Form(...),idVehiculoFk: str = Form(...),db: Session = Depends(get_db)):
     garaje = db.query(Garaje).filter_by(idGaraje=idGarajeFk).first()
     garaje.cantidad = garaje.cantidad + 1
-    vehiculo = db.query(Vehicle).filter_by(idVehiculo=vehiculo).first()
+    vehiculo = db.query(Vehicle).filter_by(idVehiculo=idVehiculoFk).first()
     vehiculo.idGarajeFk = garaje.idGaraje
     db.commit()
     return RedirectResponse(url='/garajes',status_code=HTTP_302_FOUND)

@@ -12,7 +12,7 @@
     <label for="vehiculo">Vehiculos disponibles:</label>
     <select id="vehiculo" name="idVehiculoFk">
         {% for v in vehiculos %}
-            <option value="{{ v.idVehiculo }}" {% if v.idVehiculo == Garaje.idVehiculoFk %}selected{% endif %}>{{ v.descVehiculo }}</option>
+            <option value="{{ v.idVehiculo }}" >{{ v.matricula}}</option>
         {% endfor %}
     </select><br><br>
 
