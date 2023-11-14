@@ -1,7 +1,7 @@
 {% extends "layaut.html" %}
 
 {% block content %}
-<form action="/vehiculo" method="post">
+<!-- <form action="/vehiculo" method="post">
     <label for="matricula">Matricula:</label>
     <input type="text" id="matricula" name="matricula"><br><br>
 
@@ -17,21 +17,108 @@
         <option value="">--Select a brand first--</option>
     </select><br><br>
     <input type="submit" value="Submit">
-</form>
+</form> -->
 
-<script>
-    document.getElementById('brand').addEventListener('change', async function() {
-        const models = await fetch('/get_models/' + this.value);
-        const jsonModels = await models.json();
-        const select = document.getElementById('model');
-        select.innerHTML = '';
-        for (let m of jsonModels) {
-            let option = document.createElement('option');
-            option.value = m.idModelo;
-            option.text = m.descModelo;
-            select.appendChild(option);
-        }
-    });
-  
-</script>
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reg̃uahẽ</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+
+    <link rel="stylesheet" href="./fontawesome-free-6.4.0-web/css/all.css">
+</head>
+<body>
+        <nav>
+            <div class="container nav-container">
+                <a href="" class="logo"><h3>Reg̃uahẽ.</h3></a>
+                <ul class="nav-link">
+                    <li><a href="/" style="--i:1;" class="active">Inicio</a></li>
+                    <li><a href="/vehiculo" style="--i:2;">Vehículo</a></li>
+                    <li><a href="/marca" style="--i:3;">Marca</a></li>
+                    <li><a href="/modelo" style="--i:4;">Modelo</a></li>
+                    <li><a href="/registro" style="--i:5;">Registro</a></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+                <!-- <ul class="social-link">
+                    <li><a href="" style="--i:1;"><i class="fab fa-facebook"></i></a></li>
+                    <li><a href="" style="--i:2;"><i class="fab fa-twitter"></i></a></li>
+                    <li><a href="" style="--i:3;"><i class="fab fa-instagram"></i></a></li>
+                </ul> -->
+            </div>
+        </nav>
+
+
+        <header>
+            <div class="container header-container">
+                <div class="header-left">
+                    <h3>Agregar Vehiculo </h3>
+
+                    <form action="/vehiculo" method="post">
+                        <label for="matricula">Matricula:</label>
+                        <input type="text" id="matricula" name="matricula"><br><br>
+                    
+                        <label for="brand">Selecciones una marca:</label>
+                        <select id="brand" name="idMarcaFk">
+                            {% for b in marcas %}
+                                <option value="{{ b.idMarca }}">{{ b.descMarca }}</option>
+                            {% endfor %}
+                        </select><br><br>
+                    
+                        <label for="model">Seleccione un modelo:</label>
+                        <select id="model" name="idModeloFk">
+                            <option value="">--Select a brand first--</option>
+                        </select><br><br>
+                            <button type="submit" class="btn btn-primary">Agregar</button>
+                    </form>
+
+
+                </div>
+                <div class="header-right">
+                    <div class="sq-box">
+                        <img src="/static/image/car.png" alt="">
+                    </div>
+                </div>
+            </div>
+            <div class="sq-box2"></div>
+
+
+
+
+
+
+
+        </header>
+
+
+        <script>
+            document.getElementById('brand').addEventListener('change', async function() {
+                const models = await fetch('/get_models/' + this.value);
+                const jsonModels = await models.json();
+                const select = document.getElementById('model');
+                select.innerHTML = '';
+                for (let m of jsonModels) {
+                    let option = document.createElement('option');
+                    option.value = m.idModelo;
+                    option.text = m.descModelo;
+                    select.appendChild(option);
+                }
+            });
+          
+        </script>
+
+    </body>
+</html>
+
+
+
 {% endblock %}
