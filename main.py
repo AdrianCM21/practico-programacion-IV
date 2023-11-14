@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-from models import Brand,Model,Vehicle, Base
+from models import Brand,Model,Vehicle,Activity, Base
 from pydantic import BaseModel
 from config import DATABASE_URL
 from starlette.responses import JSONResponse
@@ -38,8 +38,6 @@ def get_db():
 def cargar_raiz(request: Request):
     return templates.TemplateResponse("index.html", {"request": request,'auto':'/static/image/Rayo_McQueen.png'})
 
-class PaisCreat(BaseModel):
-    nombre_pais: str
 
 @app.get("/modelo")
 def crear_modelo(request: Request, db: Session = Depends(get_db) ):
@@ -75,6 +73,8 @@ def Guardar_marca(nombre_marca: str = Form(...), db: Session = Depends(get_db)):
     return RedirectResponse(url='/marca',status_code=HTTP_302_FOUND)
 
 
+
+
 @app.get("/vehiculo")
 def crear_vehiculo(request: Request, db: Session = Depends(get_db) ):
     vehiculos = db.query(Vehicle).all()
@@ -87,10 +87,13 @@ def agregar_vehiculo(request: Request, db: Session = Depends(get_db)  ):
     return templates.TemplateResponse("vehiculoForm.html", {"request": request,"marcas":marcas,"modelos":modelos})
 
 @app.post("/vehiculo")
-def Guardar_vehiculo(matricula: str = Form(...), idMarcaFk: str = Form(...),idModeloFk: str = Form(...),imagen_base64: str = Form(...),db: Session = Depends(get_db)):
-    vehiculo = Vehicle(matricula=matricula,idMarcaFk=idMarcaFk,idModeloFk=idModeloFk, imagen_base64=imagen_base64)
+def Guardar_vehiculo(matricula: str = Form(...), idMarcaFk: str = Form(...),idModeloFk: str = Form(...),db: Session = Depends(get_db)):
+    
+    vehiculo = Vehicle(matricula=matricula,idMarcaFk=idMarcaFk,idModeloFk=idModeloFk)
     db.add(vehiculo)
     db.commit()
+    db.refresh(vehiculo)
+    print(vehiculo.idVehiculo)
     return RedirectResponse(url='/vehiculo',status_code=HTTP_302_FOUND)
 
 # Ejemplos del prof
@@ -100,6 +103,7 @@ async def get_models(brand_id: int, db: Session = Depends(get_db) ):
     models = db.query(Model).filter_by(idMarcaFk=brand_id).all()
     print('asdjfñalsdkjfñlsdkj')
     return JSONResponse(content=[{"idModelo": model.idModelo, "descModelo": model.descModelo} for model in models])
+
 @app.get("/vehicles/")
 async def read_vehicles(matricula: str = None, marca: str = None, modelo: str = None,db: Session = Depends(get_db)):
     query = db.query(Vehicle).options(joinedload(Vehicle.brand), joinedload(Vehicle.model))
@@ -111,3 +115,35 @@ async def read_vehicles(matricula: str = None, marca: str = None, modelo: str = 
         query = query.join(Model).filter(Model.descModelo.ilike(f"%{modelo}%"))
     vehicles = query.all()
     return vehicles
+
+# Enpoint para registro de actividad 1
+@app.post("/activity")
+async def guardar_activity(request: Request, db: Session = Depends(get_db)):
+    form_data = await request.form()
+    fechaEnviada = form_data['fecha']
+    idVehiculoEnviado  = form_data['matricula']
+   
+    activityDay = db.query(Activity).filter_by(fecha=fechaEnviada).first()
+    if activityDay:
+        Vehiculo = db.query(Vehicle).filter_by(idVehiculo=idVehiculoEnviado).first()
+        activityDay.cantidad = activityDay.cantidad + 1
+        Vehiculo.idIngresoFk = activityDay.idIngreso
+        db.commit()  
+    else:
+        activityAdd = Activity(fecha=fechaEnviada,cantidad=1)
+        db.add(activityAdd)
+        db.commit()
+        db.refresh(activityAdd)
+        Vehiculo = db.query(Vehicle).filter_by(idVehiculo=idVehiculoEnviado).first()
+        Vehiculo.idIngresoFk = activityAdd.idIngreso
+        db.commit()
+    
+    
+    return JSONResponse(content={"Detalles": "No se encontraron Detalles"})
+    
+
+
+@app.get("/registro")
+def resgistro(request: Request, db: Session = Depends(get_db) ):
+    vehiculos = db.query(Vehicle).all()
+    return templates.TemplateResponse("registro.html", {"request": request,"vehiculos":vehiculos})
