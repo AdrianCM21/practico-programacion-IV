@@ -10,6 +10,9 @@
 
     <label for="modelo">Modelo:</label>
     <input type="text" id="modelo" name="modelo" onkeyup="searchVehicles()"><br><br>
+
+    <label for="garaje">Garaje:</label>
+    <input type="text" id="garaje" name="garaje" onkeyup="searchVehicles()"><br><br>
 </form>
 
 <div class="itemcontainer border-bottom">
@@ -20,6 +23,7 @@
                 <th>Matricula</th>
                 <th>Marca</th>
                 <th>Modelo</th>
+                <th>Garaje</th>
             </tr>
         </thead>
         
@@ -36,24 +40,25 @@
         const matricula = document.getElementById('matricula').value;
         const marca = document.getElementById('marca').value;
         const modelo = document.getElementById('modelo').value;
+        const garaje = document.getElementById('garaje').value;
 
-        const response = await fetch(`/vehicles/?matricula=${matricula}&marca=${marca}&modelo=${modelo}`);
+        const response = await fetch(`/vehicles/?matricula=${matricula}&marca=${marca}&modelo=${modelo}&garaje=${garaje}`);
         const vehicles = await response.json();
-
+        console.log(vehicles)
         const table = document.getElementById('vehiclesTable');
         table.innerHTML = `
             <tr>
                 <th>Matricula</th>
                 <th>Marca</th>
                 <th>Modelo</th>
-                <th>Imagen</th>
+                <th>Garaje</th>
             </tr>
             ${vehicles.map(vehicle => `
                 <tr>
                     <td>${vehicle.matricula}</td>
                     <td>${vehicle.brand.descMarca}</td>
                     <td>${vehicle.model.descModelo}</td>
-                    <td><img src="${vehicle.imagen_base64}" ></td>
+                    <td>${vehicle.garajes.description}</td>
                 </tr>
             `).join('')}
         `;

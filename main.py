@@ -117,17 +117,18 @@ async def get_models(brand_id: int, db: Session = Depends(get_db) ):
     return JSONResponse(content=[{"idModelo": model.idModelo, "descModelo": model.descModelo} for model in models])
 
 @app.get("/vehicles/")
-async def read_vehicles(matricula: str = None, marca: str = None, modelo: str = None,db: Session = Depends(get_db)):
-    query = db.query(Vehicle).options(joinedload(Vehicle.brand), joinedload(Vehicle.model))
+async def read_vehicles(matricula: str = None, marca: str = None, modelo: str = None, garaje: str = None, db: Session = Depends(get_db)):
+    query = db.query(Vehicle).options(joinedload(Vehicle.brand), joinedload(Vehicle.model), joinedload(Vehicle.garajes))
     if matricula:
         query = query.filter(Vehicle.matricula.ilike(f"%{matricula}%"))
     if marca:
         query = query.join(Brand).filter(Brand.descMarca.ilike(f"%{marca}%"))
     if modelo:
         query = query.join(Model).filter(Model.descModelo.ilike(f"%{modelo}%"))
+    if garaje:
+        query = query.join(Garaje).filter(Garaje.description.ilike(f"%{garaje}%"))
     vehicles = query.all()
     return vehicles
-
 # Enpoint para registro de actividad 1
 @app.post("/activity")
 async def guardar_activity(request: Request, db: Session = Depends(get_db)):
