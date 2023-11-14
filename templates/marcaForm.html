@@ -1,13 +1,29 @@
 {% extends "layaut.html" %}
 
 {% block content %}
-<div class="fromPaises">
-    <h1>Agregar Marca</h1>
-    <form action="/marca" method="post">
-        <label for="nombre_marca">Nombre marca:</label>
-        <input type="text" name="nombre_marca" id="nombre_marca" required>
-        <button type="submit" class="btn-success">Agregar</button>
-    </form>
+<header>
+    <div class="container header-container">
+        <div class="header-left">
+            <h3>Agregar Marca</h3>
+            <div class="fromPaises">
+                <form action="/marca" method="post">
+                    <label for="nombre_marca">Nombre marca:</label>
+                    <input type="text" name="nombre_marca" id="nombre_marca" required>
+                    <button type="submit" class="btn btn-primary">Agregar</button>
+                </form>
+            
+            </div>
 
-</div>
+
+        </div>
+        <div class="header-right">
+            <div class="sq-box">
+                <img src="/static/image/car.png" alt="">
+            </div>
+        </div>
+    </div>
+    <div class="sq-box2"></div>
+
+</header>
+
 {% endblock %}

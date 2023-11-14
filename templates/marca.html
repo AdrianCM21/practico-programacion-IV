@@ -1,33 +1,55 @@
 {% extends "layaut.html" %}
 
 {% block content %}
-       <div class="itemcontainer border-bottom">
-        <h2>Lista de marcas</h2>
-        <select id="form-select" aria-label="Marcas">
-            <option value="0" selected>Todos los modelos</option>
-            {% for marca in marcas %}
-                <option value="{{ marca.idMarca }}">{{ marca.descMarca }}</option>
-            {% endfor %}
-        </select>
-       </div>
-       <div class="btncontainer mt-3 p-2 align-items-center">
-        <a href="/"><button class="btn btn-primary">Volver</button></a>
-        <a href="/marca/add"><button class="btn btn-success">+</button></a>
+
+<header>
+    <div class="container header-container">
+        <div class="header-left">
+            <h3>Lista de marcas</h3>
+
+            <div class="itemcontainer border-bottom">
+
+                <select id="form-select" aria-label="Marcas">
+                    <option value="0" selected>Todos las marcas</option>
+                    {% for marca in marcas %}
+                        <option value="{{ marca.idMarca }}">{{ marca.descMarca }}</option>
+                    {% endfor %}
+                </select>
+               </div>
+               <div class="btncontainer mt-3 p-2 align-items-center">
+                <a href="/"><button class="btn btn-primary">Volver</button></a>
+                <a href="/marca/add"><button class="btn btn-primary">+</button></a>
+            </div>
+            <table id="vehiclesTable" class="table table-striped table-bordered">
+                <thead class="table-bordered">
+                    <tr>
+                        <th>Modelos</th>
+                    </tr>
+                </thead>
+                <tbody id="modeltbody">
+                    {% for model in modelos %}
+                        <tr>
+                            <td>{{  model.descModelo}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+
+
+        </div>
+        <div class="header-right">
+            <div class="sq-box">
+                <img src="/static/image/car.png" alt="">
+            </div>
+        </div>
     </div>
-    <table id="vehiclesTable" class="table table-striped table-bordered">
-        <thead class="table-dark">
-            <tr>
-                <th>Marcas</th>
-            </tr>
-        </thead>
-        <tbody id="modeltbody">
-            {% for model in modelos %}
-                <tr>
-                    <td>{{  model.descModelo}}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="sq-box2"></div>
+
+
+
+
+</header>
     <script>
        
         $(document).ready(function(){

@@ -1,24 +1,41 @@
 {% extends "layaut.html" %}
 
 {% block content %}
-<form action="/vehiculo" method="post">
-    <label for="matricula">Matricula:</label>
-    <input type="text" id="matricula" name="matricula"><br><br>
 
-    <label for="brand">Selecciones una marca:</label>
-    <select id="brand" name="idMarcaFk">
-        {% for b in marcas %}
-            <option value="{{ b.idMarca }}">{{ b.descMarca }}</option>
-        {% endfor %}
-    </select><br><br>
+<header>
+    <div class="container header-container">
+        <div class="header-left">
+            <h3>Agregar Vehiculo </h3>
 
-    <label for="model">Seleccione un modelo:</label>
-    <select id="model" name="idModeloFk">
-        <option value="">--Select a brand first--</option>
-    </select><br><br>
-    <input type="submit" value="Submit">
-</form>
+            <form action="/vehiculo" method="post">
+                <label for="matricula">Matricula:</label>
+                <input type="text" id="matricula" name="matricula"><br><br>
+            
+                <label for="brand">Selecciones una marca:</label>
+                <select id="brand" name="idMarcaFk">
+                    {% for b in marcas %}
+                        <option value="{{ b.idMarca }}">{{ b.descMarca }}</option>
+                    {% endfor %}
+                </select><br><br>
+            
+                <label for="model">Seleccione un modelo:</label>
+                <select id="model" name="idModeloFk">
+                    <option value="">--Select a brand first--</option>
+                </select><br><br>
+                    <button type="submit" class="btn btn-primary">Agregar</button>
+            </form>
 
+
+        </div>
+        <div class="header-right">
+            <div class="sq-box">
+                <img src="/static/image/car.png" alt="">
+            </div>
+        </div>
+    </div>
+    <div class="sq-box2"></div>
+
+</header>
 <script>
     document.getElementById('brand').addEventListener('change', async function() {
         const models = await fetch('/get_models/' + this.value);

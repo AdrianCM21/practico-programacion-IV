@@ -1,25 +1,47 @@
 {% extends "layaut.html" %}
 
 {% block content %}
-<div class="fromPaises">
-    <h1>Agregar Modelo</h1>
-    <form action="/modelo" method="post">
-        <div>
-           <label for="nombre_modelo">Modelo:</label>
-        <input type="text" name="nombre_modelo" id="nombre_modelo" required> 
-        </div>
-        <div>
-            <label for="marca">Selecciona una marca:</label>
-            <select name="marca" id="marca" >
-                {% for marca in marcas %}
-                    <option value="{{ marca.idMarca}}">{{ marca.descMarca }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        
+<header>
+    <div class="container header-container">
+        <div class="header-left">
+            <h3>Agregar Modelo</h3>
 
-        <button type="submit" class="btn-success">Agregar</button>
-    </form>
+            <div class="fromPaises">
+                <form action="/modelo" method="post">
+                    <div>
+                       <label for="nombre_modelo">Modelo:</label>
+                    <input type="text" name="nombre_modelo" id="nombre_modelo" required> 
+                    </div>
+                    <div>
+                        <label for="marca">Selecciona una marca:</label>
+                        <select name="marca" id="marca" >
+                            {% for marca in marcas %}
+                                <option value="{{ marca.idMarca}}">{{ marca.descMarca }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+            
+                    <button type="submit" class="btn btn-primary">Agregar</button>
+                </form>
+            
+            </div>
 
-</div>
+
+        </div>
+        <div class="header-right">
+            <div class="sq-box">
+                <img src="/static/image/car.png" alt="">
+            </div>
+        </div>
+    </div>
+    <div class="sq-box2"></div>
+
+
+
+
+
+
+
+</header>
 {% endblock %}
