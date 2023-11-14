@@ -35,8 +35,7 @@
     const getVehiculos =(id)=>{
         $.get(`/registroget/${id}`, function(data, status){
             const table = $("#vehiclesTable");
-            $("#contador").text('Dia: '+data.dia);
-            $("#cantidad").text('Cantidad: '+data.cantidad);
+            $("#contador").text('Dia: '+data[0].idIngresoFk);
             table.html(`
                 <tr>
                     <th>Matricula</th>
@@ -63,6 +62,8 @@
            console.log( fecha , matricula);
            $.post("/activity",{fecha:fecha,matricula:matricula}, function(data, status){
                if(!(data.msg == 'Ya esta registrado')){
+                    $("#contador").text('Dia: '+data.dia);
+                    $("#cantidad").text('Cantidad: '+data.cantidad);
                     getVehiculos(data.dia);
                 }else{
                     getVehiculos(data.dia);
