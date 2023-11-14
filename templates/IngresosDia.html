@@ -1,0 +1,27 @@
+{% extends "layaut.html" %}
+
+{% block content %}
+<div class="itemcontainer border-bottom">
+    <h2>Lista de Ingresos por Dia</h2>
+    <table id="IngresosDiaTable" class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Fecha</th>
+                <th>Cantidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+                {% for ingreso in ingresos %}
+            <tr>
+                <th>{{ ingreso.fecha }}</th>
+                <th>{{ ingreso.cantidad }}</th>
+            </tr>
+                {% endfor %}
+        </tbody>
+    </table>
+   </div>
+   <div class="btncontainer mt-3 p-2 align-items-center">
+    <a href="/"><button class="btn btn-primary">Volver</button></a>
+</div>
+{% endblock %}

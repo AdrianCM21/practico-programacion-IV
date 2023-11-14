@@ -46,6 +46,15 @@ def crear_modelo(request: Request, db: Session = Depends(get_db) ):
 
     return templates.TemplateResponse("model.html", {"request": request,"modelos":modelos})
 
+@app.get("/getmodelformarcas/{id}")
+def getmodelformarcas( id:str,db: Session = Depends(get_db) ):
+    if(id!="0"):
+        models=db.query(Model).filter_by(idMarcaFk=id).all()
+    else:
+        models=db.query(Model).all()
+    
+    return jsonable_encoder(models)
+
 @app.get("/modelo/add")
 def agregar_modelo(request: Request , db: Session = Depends(get_db) ):
     marcas = db.query(Brand).all()
@@ -60,11 +69,14 @@ def guardar_modelo(nombre_modelo: str = Form(...), marca: int = Form(...), db: S
 @app.get("/marca")
 def crear_marca(request: Request, db: Session = Depends(get_db) ):
     marcas = db.query(Brand).all()
-    return templates.TemplateResponse("marca.html", {"request": request,"marcas":marcas})
+    modelos =db.query(Model).all()
+    return templates.TemplateResponse("marca.html", {"request": request,"marcas":marcas,'modelos':modelos})
+
 
 @app.get("/marca/add")
 def agregar_marca(request: Request ):
     return templates.TemplateResponse("marcaForm.html", {"request": request})
+
 
 @app.post("/marca")
 def Guardar_marca(nombre_marca: str = Form(...), db: Session = Depends(get_db)):
@@ -102,7 +114,6 @@ def Guardar_vehiculo(matricula: str = Form(...), idMarcaFk: str = Form(...),idMo
 async def get_models(brand_id: int, db: Session = Depends(get_db) ):
     
     models = db.query(Model).filter_by(idMarcaFk=brand_id).all()
-    print('asdjfñalsdkjfñlsdkj')
     return JSONResponse(content=[{"idModelo": model.idModelo, "descModelo": model.descModelo} for model in models])
 
 @app.get("/vehicles/")
@@ -175,4 +186,7 @@ def delete_registro(id:int, db: Session = Depends(get_db)):
     db.commit()
     return JSONResponse(content={'msg':'Eliminado','dia':activityDay.idIngreso})
     
-
+@app.get("/IngresosDia") 
+def IngresosDia(request: Request, db: Session = Depends(get_db) ):
+    ingresos =db.query(Activity).all()
+    return templates.TemplateResponse("IngresosDia.html", {"request": request,"ingresos":ingresos})
