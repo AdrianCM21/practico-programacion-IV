@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException, Request, Form
 from fastapi.responses import RedirectResponse
+from fastapi.encoders import jsonable_encoder
 from starlette.status import HTTP_302_FOUND
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
@@ -119,16 +120,23 @@ async def read_vehicles(matricula: str = None, marca: str = None, modelo: str = 
 # Enpoint para registro de actividad 1
 @app.post("/activity")
 async def guardar_activity(request: Request, db: Session = Depends(get_db)):
+    dia=0
+    cant=0
     form_data = await request.form()
     fechaEnviada = form_data['fecha']
     idVehiculoEnviado  = form_data['matricula']
-   
+    
     activityDay = db.query(Activity).filter_by(fecha=fechaEnviada).first()
     if activityDay:
+        cant=activityDay.cantidad + 1
+        dia=activityDay.idIngreso
         Vehiculo = db.query(Vehicle).filter_by(idVehiculo=idVehiculoEnviado).first()
-        activityDay.cantidad = activityDay.cantidad + 1
+        if Vehiculo.idIngresoFk==activityDay.idIngreso:
+            return JSONResponse(content={'msg':'Ya esta registrado','dia':activityDay.idIngreso})
+        activityDay.cantidad = cant
         Vehiculo.idIngresoFk = activityDay.idIngreso
         db.commit()  
+    
     else:
         activityAdd = Activity(fecha=fechaEnviada,cantidad=1)
         db.add(activityAdd)
@@ -137,13 +145,34 @@ async def guardar_activity(request: Request, db: Session = Depends(get_db)):
         Vehiculo = db.query(Vehicle).filter_by(idVehiculo=idVehiculoEnviado).first()
         Vehiculo.idIngresoFk = activityAdd.idIngreso
         db.commit()
+        cant=activityAdd.cantidad
+        dia=activityAdd.idIngreso
     
     
-    return JSONResponse(content={"Detalles": "No se encontraron Detalles"})
+    return JSONResponse(content={'msg':'Registrado','dia':dia,'cantidad':cant})
     
 
+
+@app.get("/registroget/{id}")
+def resgistro(id:int, db: Session = Depends(get_db) ):
+    vehiculos=db.query(Vehicle).filter_by(idIngresoFk=id).all()
+    return jsonable_encoder(vehiculos)
 
 @app.get("/registro")
 def resgistro(request: Request, db: Session = Depends(get_db) ):
     vehiculos = db.query(Vehicle).all()
     return templates.TemplateResponse("registro.html", {"request": request,"vehiculos":vehiculos})
+
+@app.get("/deleteregistro/{id}")
+def delete_registro(id:int, db: Session = Depends(get_db)):
+   
+    vehiculos=db.query(Vehicle).filter_by(idVehiculo=id).first()
+    auxidIngreso=vehiculos.idIngresoFk
+    vehiculos.idIngresoFk=None
+    db.commit()
+    activityDay = db.query(Activity).filter_by(idIngreso=auxidIngreso).first()
+    activityDay.cantidad = activityDay.cantidad - 1 
+    db.commit()
+    return JSONResponse(content={'msg':'Eliminado','dia':activityDay.idIngreso})
+    
+

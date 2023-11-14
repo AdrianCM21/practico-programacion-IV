@@ -2,9 +2,10 @@
 
 {% block content %}
 <div class="formRegistro">
+    <p id="contador">Dia: 0</p>
+    <p id="cantidad">Cantidad: 0</p>
     <label for="fecha_registro">Fecha:</label>
-    <input type="date" id="fecha_registro" required>
-    <p id="contador">0</p>
+    <input type="date" id="fecha_registro" required>  
 </div>
 <div>
     <label for="matricula">Matricula:</label>
@@ -31,27 +32,43 @@
 </div>
 
 <script>
+    const getVehiculos =(id)=>{
+        $.get(`/registroget/${id}`, function(data, status){
+            const table = $("#vehiclesTable");
+            $("#contador").text('Dia: '+data[0].idIngresoFk);
+            table.html(`
+                <tr>
+                    <th>Matricula</th>
+                    <th>Eliminar</th>
+                </tr>
+                ${data.map(vehicle => `
+                    <tr>
+                        <td>${vehicle.matricula}</td>
+                        <td ><button class="btn-danger"  onclick="deleteRegistro(${vehicle.idVehiculo})">Eliminar</button></td>
+                    </tr>
+                `).join('')}
+            `);
+        });
+    }
+    const deleteRegistro=(id)=>{
+        $.get(`/deleteregistro/${id}`, function(data, status){
+            getVehiculos(data.dia);
+        });
+    }
     $(document).ready(function(){
        $(".btn").click(function(){
            const fecha = $("#fecha_registro").val();
            const matricula = $("#matricula").val();
            console.log( fecha , matricula);
            $.post("/activity",{fecha:fecha,matricula:matricula}, function(data, status){
-               console.log(data,'front')
-            //    $(".card-text").text(data.Detalles);
-            //    const table = $("#vehiclesTable");
-            //     table.html(`
-            //         <tr>
-            //             <th>Matricula</th>
-            //             <th>Eliminar</th>
-            //         </tr>
-            //         ${vehicles.map(vehicle => `
-            //             <tr>
-            //                 <td>${vehicle.matricula}</td>
-            //                 <td><a href="/registro/borrar">-</a></td>
-            //             </tr>
-            //         `).join('')}
-            //     `);
+               if(!(data.msg == 'Ya esta registrado')){
+                    $("#contador").text('Dia: '+data.dia);
+                    $("#cantidad").text('Cantidad: '+data.cantidad);
+                    getVehiculos(data.dia);
+                }else{
+                    getVehiculos(data.dia);
+                }
+               
            });
        });
    });
