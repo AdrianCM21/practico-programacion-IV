@@ -19,7 +19,7 @@ class Model(Base):
     vehicles = relationship("Vehicle", back_populates="model")
 
 class Activity(Base):
-    __tablename__ = 'activity'
+    __tablename__ = 'activitys'
     idIngreso = Column(Integer, primary_key=True, index=True)
     fecha = Column(String(21), unique=True, index=True)
     cantidad = Column(Integer, default=1)
@@ -33,7 +33,7 @@ class Vehicle(Base):
     matricula = Column(String(50), unique=True, index=True)
     idMarcaFk = Column(Integer, ForeignKey('brands.idMarca'))
     idModeloFk = Column(Integer, ForeignKey('models.idModelo'))
-    idIngresoFk = Column(Integer, ForeignKey('activity.idIngreso'), nullable=True)
+    idIngresoFk = Column(Integer, ForeignKey('activitys.idIngreso'), nullable=True)
     activity = relationship("Activity", back_populates="vehicles", foreign_keys=[idIngresoFk])
     brand = relationship("Brand")
     model = relationship("Model")
