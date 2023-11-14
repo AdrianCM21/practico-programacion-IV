@@ -1,0 +1,16 @@
+{% extends "layaut.html" %}
+
+{% block content %}
+<div class="fromPaises">
+    <h1>Agregar Modelo</h1>
+    <form action="/garajes/add" method="post">
+        <div>
+           <label for="garaje_modelo">Garaje:</label>
+        <input type="text" name="garaje_modelo" id="garaje_modelo" required> 
+        </div>
+
+        <button type="submit" class="btn-success">Agregar</button>
+    </form>
+
+</div>
+{% endblock %}
