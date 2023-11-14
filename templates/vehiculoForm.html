@@ -16,14 +16,6 @@
     <select id="model" name="idModeloFk">
         <option value="">--Select a brand first--</option>
     </select><br><br>
-    <input type="hidden" id="imagen_base64" name="imagen_base64" value="">
-
-    <!-- Campo de entrada de imagen -->
-    <label for="image">Imagen:</label>
-    <input type="file" id="image" accept="image/*"><br><br>
-
-    <button type="button" id="saveImage">Guardar Imagen</button>
-
     <input type="submit" value="Submit">
 </form>
 
@@ -40,23 +32,6 @@
             select.appendChild(option);
         }
     });
-    document.getElementById('saveImage').addEventListener('click', function() {
-        const imageInput = document.getElementById('image');
-        if (imageInput.files.length > 0) {
-            const file = imageInput.files[0];
-            const reader = new FileReader();
-
-            reader.onload = function() {
-                const base64Image = reader.result;
-                console.log("Imagen en base64:", base64Image);
-                document.getElementById('imagen_base64').value = base64Image;
-
-            };
-
-            reader.readAsDataURL(file);
-        } else {
-            alert("Seleccione una imagen antes de guardarla.");
-        }
-    });
+  
 </script>
 {% endblock %}
