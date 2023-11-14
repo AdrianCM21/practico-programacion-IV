@@ -158,8 +158,6 @@ async def guardar_activity(request: Request, db: Session = Depends(get_db)):
         db.commit()
         cant=activityAdd.cantidad
         dia=activityAdd.idIngreso
-    
-    
     return JSONResponse(content={'msg':'Registrado','dia':dia,'cantidad':cant})
     
 
@@ -221,6 +219,17 @@ def agregar_garaje_vehiculopost( idGarajeFk: str = Form(...),idVehiculoFk: str =
     vehiculo.idGarajeFk = garaje.idGaraje
     db.commit()
     return RedirectResponse(url='/garajes',status_code=HTTP_302_FOUND)
+@app.get("/deletegarajes/{id}")
+def borrar(id: int, db: Session = Depends(get_db)):
+    dato = db.query(Garaje).filter_by(idGaraje = id).first()
+    if dato:
+        db.delete(dato)
+        db.commit()
+        return RedirectResponse(url='/garajes',status_code=HTTP_302_FOUND)
+    return HTTPException(status_code=404, detail="Ciudad no encontrado")
+
+
+
 
 
 
