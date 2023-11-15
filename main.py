@@ -170,7 +170,7 @@ def resgistro(id:int, db: Session = Depends(get_db) ):
 
 @app.get("/registro")
 def resgistro(request: Request, db: Session = Depends(get_db) ):
-    vehiculos = db.query(Vehicle).all()
+    vehiculos = db.query(Vehicle).filter(Vehicle.idIngresoFk.is_(None)).all()
     return templates.TemplateResponse("registro.html", {"request": request,"vehiculos":vehiculos})
 
 @app.get("/deleteregistro/{id}")
