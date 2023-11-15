@@ -1,7 +1,7 @@
 {% extends "layaut.html" %}
 
 {% block content %}
-<div class="fromPaises">
+<!-- <div class="fromPaises">
     <h1>Agregar Modelo</h1>
     <form action="/garajes/add" method="post">
         <div>
@@ -12,5 +12,41 @@
         <button type="submit" class="btn-success">Agregar</button>
     </form>
 
-</div>
+</div> -->
+
+
+
+<header>
+    <div class="container header-container">
+        <div class="header-left">
+            <h3>Agregar Garaje</h3>
+
+
+                <div class="fromPaises">
+                    <form action="/garajes/add" method="post">
+                        <div>
+                           <label for="garaje_modelo">Garaje:</label>
+                        <input type="text" name="garaje_modelo" id="garaje_modelo" required> 
+                        </div>
+                
+                        <button type="submit" class="btn btn-primary">Agregar</button>
+                    </form>
+                
+                </div>
+
+
+
+        </div>
+        <div class="header-right">
+            <div class="sq-box">
+                <img src="/static/image/car.png" alt="">
+            </div>
+        </div>
+    </div>
+    <div class="sq-box2"></div>
+
+
+
+
+</header>
 {% endblock %}

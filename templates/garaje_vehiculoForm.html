@@ -1,7 +1,7 @@
 {% extends "layaut.html" %}
 
 {% block content %}
-<form action="/garajes_vehiculo/add" method="post">
+<!-- <form action="/garajes_vehiculo/add" method="post">
     <label for="garaje">Selecciona un garaje:</label>
     <select id="garaje" name="idGarajeFk">
         {% for g in garajes %}
@@ -17,6 +17,49 @@
     </select><br><br>
 
     <input type="submit" value="Guardar cambios">
-</form>
+</form> -->
 
+
+
+
+<header>
+    <div class="container header-container">
+        <div class="header-left">
+            <h3>Agregar vehiculo</h3>
+
+
+            <form action="/garajes_vehiculo/add" method="post">
+                <label for="garaje">Selecciona un garaje:</label>
+                <select id="garaje" name="idGarajeFk">
+                    {% for g in garajes %}
+                        <option value="{{ g.idGaraje }}">{{ g.description}}</option>
+                    {% endfor %}
+                </select><br><br>
+            
+                <label for="vehiculo">Vehiculos disponibles:</label>
+                <select id="vehiculo" name="idVehiculoFk">
+                    {% for v in vehiculos %}
+                        <option value="{{ v.idVehiculo }}" >{{ v.matricula}}</option>
+                    {% endfor %}
+                </select><br><br>
+            
+                <input type="submit" class="btn btn-primary" value="Guardar cambios">
+
+            </form>
+
+
+
+        </div>
+        <div class="header-right">
+            <div class="sq-box">
+                <img src="/static/image/car.png" alt="">
+            </div>
+        </div>
+    </div>
+    <div class="sq-box2"></div>
+
+
+
+
+</header>
 {% endblock %}
