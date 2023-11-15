@@ -13,6 +13,7 @@
             
                 <label for="brand">Selecciones una marca:</label>
                 <select id="brand" name="idMarcaFk">
+                    <option value="0">No seleccionado</option>
                     {% for b in marcas %}
                         <option value="{{ b.idMarca }}">{{ b.descMarca }}</option>
                     {% endfor %}

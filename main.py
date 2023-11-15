@@ -222,12 +222,13 @@ def agregar_garaje_vehiculopost( idGarajeFk: str = Form(...),idVehiculoFk: str =
     return RedirectResponse(url='/garajes',status_code=HTTP_302_FOUND)
 @app.get("/deletegarajes/{id}")
 def borrar(id: int, db: Session = Depends(get_db)):
-    dato = db.query(Garaje).filter_by(idGaraje = id).first()
-    if dato:
-        db.delete(dato)
+    garaje = db.query(Garaje).filter_by(idGaraje=id).first()
+    if garaje:
+        db.query(Vehicle).filter_by(idGarajeFk=garaje.idGaraje).update({"idGarajeFk": None})
+        db.delete(garaje)
         db.commit()
         return RedirectResponse(url='/garajes',status_code=HTTP_302_FOUND)
-    return HTTPException(status_code=404, detail="Ciudad no encontrado")
+    raise HTTPException(status_code=404, detail="Garaje no encontrado")
 
 
 

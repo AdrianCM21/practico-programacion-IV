@@ -78,7 +78,7 @@
                     <td>${vehicle.matricula}</td>
                     <td>${vehicle.brand.descMarca}</td>
                     <td>${vehicle.model.descModelo}</td>
-                    <td>${vehicle.garajes.description}</td>
+                    <td>${(vehicle.garajes?vehicle.garajes.description:'')}</td>
                 </tr>
             `).join('')}
         `;
