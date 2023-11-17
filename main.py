@@ -175,9 +175,9 @@ def resgistro(request: Request, db: Session = Depends(get_db) ):
 
 @app.get("/deleteregistro/{id}")
 def delete_registro(id:int, db: Session = Depends(get_db)):
-   
     vehiculos=db.query(Vehicle).filter_by(idVehiculo=id).first()
     auxidIngreso=vehiculos.idIngresoFk
+    print(auxidIngreso)
     vehiculos.idIngresoFk=None
     db.commit()
     activityDay = db.query(Activity).filter_by(idIngreso=auxidIngreso).first()
@@ -230,6 +230,21 @@ def borrar(id: int, db: Session = Depends(get_db)):
         return RedirectResponse(url='/garajes',status_code=HTTP_302_FOUND)
     raise HTTPException(status_code=404, detail="Garaje no encontrado")
 
+@app.get("/datos_activity/{fecha1}")
+def getActivity(fecha1:str, db: Session = Depends(get_db)):
+    activity = db.query(Activity).filter_by(fecha=fecha1).first()
+    return jsonable_encoder(activity)
+
+
+@app.get("/datos_activityforid/{fecha1}")
+def getActivityforid(fecha1:str, db: Session = Depends(get_db)):
+    activity = db.query(Activity).filter_by(idIngreso=fecha1).first()
+    return jsonable_encoder(activity)
+
+@app.get("/getselect")
+def getselect(db: Session = Depends(get_db)):
+    vehiculos = db.query(Vehicle).filter(Vehicle.idIngresoFk.is_(None)).all()
+    return jsonable_encoder(vehiculos)
 
 
 

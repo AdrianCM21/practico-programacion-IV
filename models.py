@@ -22,7 +22,7 @@ class Activity(Base):
     __tablename__ = 'activitys'
     idIngreso = Column(Integer, primary_key=True, index=True)
     fecha = Column(String(21), unique=True, index=True)
-    cantidad = Column(Integer, default=1)
+    cantidad = Column(Integer, default=0)
     vehicles = relationship("Vehicle", back_populates="activity")
      
 class Garaje(Base):

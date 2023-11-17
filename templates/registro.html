@@ -16,9 +16,6 @@
                 <label for="matricula">Matricula:</label>
                 <select id="matricula" name="matricula" >
                     <option value="">Selecciona una matrícula</option>
-                    {% for vehicle in vehiculos %}
-                        <option value="{{vehicle.idVehiculo}}">{{vehicle.matricula}}</option>
-                    {% endfor %}
                 </select><br><br>
             </div>
             <a href="/IngresosDia"><button class="btn btn-primary">Lista de ingresos por dia</button></a>
@@ -54,10 +51,38 @@
 </header>
 
 <script>
+    const getselect=()=>{
+        $.get("/getselect",function(data, status){
+            const select = $("#matricula");
+            select.html(`
+                <option value="">Selecciona una matrícula</option>
+                ${data.map(vehicle => `
+                    <option value="${vehicle.idVehiculo}">${vehicle.matricula}</option>
+                `).join('')}
+            `);
+        });
+    }
+    const getDatosActividad = (fecha)=>{
+        $.get("/datos_activity/"+fecha,function(data, status){
+            $("#contador").text('Dia: '+data.idIngreso);
+            $("#cantidad").text('Cantidad: '+data.cantidad);
+            getselect();
+            getVehiculos(data.idIngreso);
+        });
+    }
+    const getDatosActividadforid = (id)=>{
+        $.get("/datos_activityforid/"+id,function(data, status){
+            $("#contador").text('Dia: '+data.idIngreso);
+            $("#cantidad").text('Cantidad: '+data.cantidad);
+            getselect();
+            getVehiculos(data.idIngreso);
+        });
+    }
     const getVehiculos =(id)=>{
         $.get(`/registroget/${id}`, function(data, status){
             const table = $("#vehiclesTable");
-            $("#contador").text('Dia: '+data[0].idIngresoFk);
+            getselect();
+            const dia= data[0]?data[0].idIngresoFk:'0'
             table.html(`
                 <tr>
                     <th>Matricula</th>
@@ -74,10 +99,15 @@
     }
     const deleteRegistro=(id)=>{
         $.get(`/deleteregistro/${id}`, function(data, status){
-            getVehiculos(data.dia);
+
+            getDatosActividadforid(data.dia)
         });
     }
     $(document).ready(function(){
+        $('#fecha_registro').change(function() {
+            const fecha = $("#fecha_registro").val();
+            getDatosActividad(fecha)
+        });
        $(".btn").click(function(){
            const fecha = $("#fecha_registro").val();
            const matricula = $("#matricula").val();
