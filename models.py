@@ -23,13 +23,17 @@ class Activity(Base):
     idIngreso = Column(Integer, primary_key=True, index=True)
     fecha = Column(String(21), unique=True, index=True)
     cantidad = Column(Integer, default=0)
+    limite= Column(Integer, default=0)
     vehicles = relationship("Vehicle", back_populates="activity")
      
 class Garaje(Base):
     __tablename__ = 'garajes'
     idGaraje = Column(Integer, primary_key=True, index=True)
     description = Column(String(21), unique=True, index=True)
-    cantidad = Column(Integer, default=1)
+    cantidad= Column(Integer, default=0)
+    Cantidad_Examen = Column(Integer, default=0)
+    limite= Column(Integer, default=0)
+    Cerrado_examen= Column(Integer, default=0)
     vehicles = relationship("Vehicle", back_populates="garajes")
      
 
@@ -40,6 +44,7 @@ class Vehicle(Base):
     idMarcaFk = Column(Integer, ForeignKey('brands.idMarca'))
     idModeloFk = Column(Integer, ForeignKey('models.idModelo'))
     idIngresoFk = Column(Integer, ForeignKey('activitys.idIngreso'), nullable=True)
+    Tipo_examen= Column(String(50), nullable=True)
     idGarajeFk = Column(Integer, ForeignKey('garajes.idGaraje'), nullable=True)
     activity = relationship("Activity", back_populates="vehicles", foreign_keys=[idIngresoFk])
     garajes = relationship("Garaje", back_populates="vehicles", foreign_keys=[idGarajeFk])

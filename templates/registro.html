@@ -9,6 +9,7 @@
             <div class="formRegistro">
                 <p id="contador">Dia: 0</p>
                 <p id="cantidad">Cantidad: 0</p>
+                <p id="limite">Limite: 0</p>
                 <label for="fecha_registro">Fecha:</label>
                 <input type="date" id="fecha_registro" required>  
             </div>
@@ -64,8 +65,10 @@
     }
     const getDatosActividad = (fecha)=>{
         $.get("/datos_activity/"+fecha,function(data, status){
+            console.log(data)
             $("#contador").text('Dia: '+data.idIngreso);
             $("#cantidad").text('Cantidad: '+data.cantidad);
+            $("#limite").text('Limite: '+data.limite);
             getselect();
             getVehiculos(data.idIngreso);
         });
@@ -74,6 +77,7 @@
         $.get("/datos_activityforid/"+id,function(data, status){
             $("#contador").text('Dia: '+data.idIngreso);
             $("#cantidad").text('Cantidad: '+data.cantidad);
+            $("#limite").text('Limite: '+data.limite);
             getselect();
             getVehiculos(data.idIngreso);
         });
@@ -104,6 +108,7 @@
         });
     }
     $(document).ready(function(){
+        getselect();
         $('#fecha_registro').change(function() {
             const fecha = $("#fecha_registro").val();
             getDatosActividad(fecha)

@@ -19,21 +19,25 @@
 <header>
     <div class="container header-container">
         <div class="header-left">
-            <h3>Agregar Garaje</h3>
+            <h3>Editar Garaje</h3>
 
 
                 <div class="fromPaises">
-                    <form action="/garajes/add" method="post">
+                    <form action="/garajes/edit" method="post">
                         <div>
                            <label for="garaje_modelo">Garaje:</label>
-                        <input type="text" name="garaje_modelo" id="garaje_modelo" required> 
+                        <input type="text" name="garaje_modelo" id="garaje_modelo" value="{{garaje.description}}" required> 
                         </div>
                         <div>
                             <label for="garaje_cantidad">Cantidad:</label>
-                            <input type="number" name="garaje_cantidad" id="garaje_cantidad" required>
+                            <input type="number" name="garaje_cantidad" id="garaje_cantidad" value="{{garaje.Cantidad_Examen}}">
                         </div>
 
-                        
+                        <select name="cerrado" id="Tipo_examen">
+                            <option value="1" {% if garaje.Cerrado_examen == 1 %}selected{% endif %}>cerrrado</option>
+                            <option value="0" {% if garaje.Cerrado_examen == 0 %}selected{% endif %}>abierto</option>
+                        </select>
+                        <input type="hidden" name="garaje_id" value="{{garaje.idGaraje}}">
                 
                         <button type="submit" class="btn btn-primary">Agregar</button>
                     </form>

@@ -1,0 +1,42 @@
+{% extends "layaut.html" %}
+
+{% block content %}
+<header>
+    <div class="container header-container">
+        <div class="header-left">
+            <h3>Editar Garaje</h3>
+
+
+                <div class="fromPaises">
+                    <form action="/vehiculo/edit" method="post">
+                        <div>
+                           <label for="matriculaa">Matricula:</label>
+                        <input type="text" name="matriculaa" id="garaje_modelo" value="{{vehiculo.matricula}}" required> 
+                        </div>
+                        <select name="tipo_examen" id="Tipo_examen">
+                            <option value="Normal" {% if vehiculo.Tipo_examen == "Normal" %}selected{% endif %}>Normal</option>
+                            <option value="Gran Porte" {% if vehiculo.Tipo_examen == "Gran Porte" %}selected{% endif %}>Gran porte</option>
+                        </select>
+                        <input type="hidden" name="idv" value="{{vehiculo.idVehiculo}}">
+                
+                        <button type="submit" class="btn btn-primary">Agregar</button>
+                    </form>
+                
+                </div>
+
+
+
+        </div>
+        <div class="header-right">
+            <div class="sq-box">
+                <img src="/static/image/car.png" alt="">
+            </div>
+        </div>
+    </div>
+    <div class="sq-box2"></div>
+
+
+
+
+</header>
+{% endblock %}

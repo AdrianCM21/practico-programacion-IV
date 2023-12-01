@@ -88,6 +88,7 @@ def Guardar_marca(nombre_marca: str = Form(...), db: Session = Depends(get_db)):
 
 
 
+
 @app.get("/vehiculo")
 def crear_vehiculo(request: Request, db: Session = Depends(get_db) ):
     vehiculos = db.query(Vehicle).all()
@@ -100,14 +101,15 @@ def agregar_vehiculo(request: Request, db: Session = Depends(get_db)  ):
     return templates.TemplateResponse("vehiculoForm.html", {"request": request,"marcas":marcas,"modelos":modelos})
 
 @app.post("/vehiculo")
-def Guardar_vehiculo(matricula: str = Form(...), idMarcaFk: str = Form(...),idModeloFk: str = Form(...),db: Session = Depends(get_db)):
+def Guardar_vehiculo(tipo_examen:str=Form(...),matricula: str = Form(...), idMarcaFk: str = Form(...),idModeloFk: str = Form(...),db: Session = Depends(get_db)):
     
-    vehiculo = Vehicle(matricula=matricula,idMarcaFk=idMarcaFk,idModeloFk=idModeloFk)
+    vehiculo = Vehicle(matricula=matricula,idMarcaFk=idMarcaFk,idModeloFk=idModeloFk,Tipo_examen=tipo_examen)
     db.add(vehiculo)
     db.commit()
     db.refresh(vehiculo)
     print(vehiculo.idVehiculo)
     return RedirectResponse(url='/vehiculo',status_code=HTTP_302_FOUND)
+
 
 # Ejemplos del prof
 @app.get("/get_models/{brand_id}")
@@ -140,6 +142,10 @@ async def guardar_activity(request: Request, db: Session = Depends(get_db)):
     
     activityDay = db.query(Activity).filter_by(fecha=fechaEnviada).first()
     if activityDay:
+        activityDay.limite=activityDay.limite+1
+        if (not (activityDay.limite<5)):
+            print('limite 4 vehiculos alcansado')
+            return JSONResponse(content={'msg':'No hay cupo','dia':activityDay.idIngreso})
         cant=activityDay.cantidad + 1
         dia=activityDay.idIngreso
         Vehiculo = db.query(Vehicle).filter_by(idVehiculo=idVehiculoEnviado).first()
@@ -198,7 +204,7 @@ def garajes(request: Request, db: Session = Depends(get_db) ):
 @app.get("/garajes_vehiculo/add")
 def agregar_garaje_vehiculo(request: Request, db: Session = Depends(get_db)):
     garajes = db.query(Garaje).all()
-    vehiculos = db.query(Vehicle).filter(Vehicle.idGarajeFk.is_(None)).all()
+    vehiculos = db.query(Vehicle).filter(Vehicle.Tipo_examen == "Normal", Vehicle.idGarajeFk.is_(None)).all()
     return templates.TemplateResponse("garaje_vehiculoForm.html", {"request": request, "garajes": garajes, "vehiculos": vehiculos})
 
 @app.get("/garajes/add")
@@ -206,15 +212,36 @@ def agregar_garaje(request: Request, db: Session = Depends(get_db)):
     return templates.TemplateResponse("garajeForm.html", {"request": request})
 
 @app.post("/garajes/add")
-def agregar_garajepost( garaje_modelo: str = Form(...),db: Session = Depends(get_db)):
-    garaje = Garaje(description=garaje_modelo,cantidad=0)
+def agregar_garajepost( garaje_modelo: str = Form(...),garaje_cantidad:str=Form(...),db: Session = Depends(get_db)):
+    garaje_cantidad = int(garaje_cantidad) 
+    garaje = Garaje(description=garaje_modelo,cantidad=0,Cantidad_Examen=garaje_cantidad)
     db.add(garaje)
     db.commit()
     return RedirectResponse(url='/garajes',status_code=HTTP_302_FOUND)
 
+
+@app.post("/garajes/edit")
+def edit_garajepost( cerrado:str=Form(...),garaje_id:str=Form(...),garaje_modelo: str = Form(...),garaje_cantidad:str=Form(...),db: Session = Depends(get_db)):
+    garaje = db.query(Garaje).filter(Garaje.idGaraje == garaje_id).first()
+
+    if garaje is None:
+        return {"error": "Garaje not found"}
+    garaje.description = garaje_modelo
+    garaje.Cantidad_Examen = int(garaje_cantidad)
+    garaje.Cerrado_examen= int(cerrado)
+
+    db.commit()
+
+    return RedirectResponse(url='/garajes', status_code=HTTP_302_FOUND)
+
 @app.post("/garajes_vehiculo/add")
 def agregar_garaje_vehiculopost( idGarajeFk: str = Form(...),idVehiculoFk: str = Form(...),db: Session = Depends(get_db)):
     garaje = db.query(Garaje).filter_by(idGaraje=idGarajeFk).first()
+    if garaje.limite>=garaje.Cantidad_Examen:
+        return RedirectResponse(url='/garajes',status_code=HTTP_302_FOUND)
+    if garaje.Cerrado_examen==1:
+        return RedirectResponse(url='/garajes',status_code=HTTP_302_FOUND)
+    garaje.limite = garaje.limite + 1
     garaje.cantidad = garaje.cantidad + 1
     vehiculo = db.query(Vehicle).filter_by(idVehiculo=idVehiculoFk).first()
     vehiculo.idGarajeFk = garaje.idGaraje
@@ -228,6 +255,13 @@ def borrar(id: int, db: Session = Depends(get_db)):
         db.delete(garaje)
         db.commit()
         return RedirectResponse(url='/garajes',status_code=HTTP_302_FOUND)
+    raise HTTPException(status_code=404, detail="Garaje no encontrado")
+
+@app.get("/editgarajes/{id}")
+def editgarajes(id: int, request: Request, db: Session = Depends(get_db)):
+    garaje = db.query(Garaje).filter_by(idGaraje=id).first()
+    if garaje:
+        return templates.TemplateResponse("garaje_edit.html", {"request": request, "garaje": garaje})
     raise HTTPException(status_code=404, detail="Garaje no encontrado")
 
 @app.get("/datos_activity/{fecha1}")
@@ -248,6 +282,25 @@ def getselect(db: Session = Depends(get_db)):
 
 
 
+@app.get("/editvehiculo/{id}")
+def editvehiculo(id: int, request: Request, db: Session = Depends(get_db)):
+    print('dfakjshd')
+    vehicle = db.query(Vehicle).filter_by(idVehiculo=id).first()
+    if vehicle:
+        return templates.TemplateResponse("vehiculo_edit.html", {"request": request, "vehiculo": vehicle})
+    raise HTTPException(status_code=404, detail="Garaje no encontrado")
 
 
+
+@app.post("/vehiculo/edit")
+def edit_vehicle( tipo_examen:str=Form(...),idv: str = Form(...),db: Session = Depends(get_db)):
+    vehicle = db.query(Vehicle).filter(Vehicle.idVehiculo == idv).first()
+
+    if vehicle is None:
+        return {"error": "Garaje not found"}
+    vehicle.Tipo_examen = tipo_examen
+
+    db.commit()
+
+    return RedirectResponse(url='/vehiculos', status_code=HTTP_302_FOUND)
 
